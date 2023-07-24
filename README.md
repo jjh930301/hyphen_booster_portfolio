@@ -2,6 +2,9 @@
 
 ## booster server
 
+로컬 , 개발서버 구성 , k8s 구성 , DB 구조 설계 팀원없이 혼자 구성하고 개발했습니다.  
+*.yml 파일은 deployment와 ingress입니다.  
+
 ### Requirements
 
 ```bash
