@@ -1,0 +1,120 @@
+version: "3"
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile_dev
+    container_name: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - nest
+      - nest2
+      - auth
+      - admin
+      - socket
+      - hellofin
+      - redis
+    env_file: .env
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    container_name: auth
+    env_file: .env
+    environment:
+      - ENV=development
+    restart: always
+    ports:
+      - 8080:8080
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: admin
+    restart: always
+    env_file: .env
+    environment:
+      - ENV=development
+    ports:
+      - 5555:5555
+    volumes:
+      - "./admin:/usr/src/admin"
+      - "/usr/src/admin/node_modules"
+      - "/usr/src/admin/dist"
+  nest:
+    build:
+      context: ./nest
+      dockerfile: Dockerfile
+    container_name: nest
+    restart: always
+    env_file: .env
+    environment:
+      - ENV=development
+    ports:
+      - 8000:8000
+    volumes:
+      - "./nest:/usr/src/nest"
+      - "/usr/src/nest/node_modules"
+      - "/usr/src/nest/dist"
+  nest2:
+    build:
+      context: ./nest2
+      dockerfile: Dockerfile
+    container_name: nest2
+    restart: always
+    env_file: .env
+    environment:
+      - ENV=development
+    ports:
+      - 8002:8002
+    volumes:
+      - "./nest2:/usr/src/nest2"
+      - "/usr/src/nest2/node_modules"
+      - "/usr/src/nest2/dist"
+  hellofin:
+    build:
+      context: ./hellofin
+      dockerfile: Dockerfile
+    container_name: hellofin
+    restart: always
+    env_file: .env
+    environment:
+      - ENV=development
+    ports:
+      - 8003:8003
+    volumes:
+      - "./hellofin:/usr/src/hellofin"
+      - "/usr/src/hellofin/node_modules"
+      - "/usr/src/hellofin/dist"
+  socket:
+    build:
+      context: ./socket
+      dockerfile: Dockerfile
+    container_name: socket
+    restart: always
+    env_file: .env
+    environment:
+      - ENV=development
+    ports:
+      - 8001:8001
+    expose:
+      - 8001
+    volumes:
+      - "./socket:/usr/src/socket"
+      - "/usr/src/socket/node_modules"
+      - "/usr/src/socket/dist"
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: redis
+    hostname: redis
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - 6379:6379

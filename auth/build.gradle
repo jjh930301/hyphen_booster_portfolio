@@ -1,0 +1,65 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.2'
+	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'java'
+}
+
+group = 'com.booster.hyphen'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation fileTree(dir: 'src/main/java/com/booster/hyphen/nice/libs', include: '*.jar') // MCheckPlus.jar
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // orm
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2' // mybatis
+	implementation 'com.google.code.gson:gson:2.9.0' // json
+	implementation group: 'org.springframework.boot', name: 'spring-boot-devtools' // hot reaload
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2' // swagger
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2' // swagger
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2' // jwt
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2' // jwt
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2' // jwt
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' // health checker
+	implementation group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '1.0.0'
+	compileOnly ("org.springframework.boot:spring-boot-devtools")
+	compileOnly 'org.projectlombok:lombok' // modeling
+	// compile('org.springframework.data:spring-data-commons') // PlatformTransactionManager
+	runtimeOnly 'mysql:mysql-connector-java' // mysql
+	annotationProcessor 'org.projectlombok:lombok' // modeling
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+// auto reload
+task buildAndReload {
+	dependsOn build
+	mustRunAfter build    // buildAndReload must run after the source files are built into class files using build task
+	doLast {
+		new File(".", "reload-trigger.txt").text = "${System.currentTimeMillis()}" // update trigger file in root folder for hot reload
+	}
+}
+// auto reload
+task getDeps(type: Copy) {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	from configurations.compileClasspath into "libs/"
+	from configurations.runtimeClasspath into "libs/"
+}
+
+bootRun {
+	String activeProfile = System.properties['spring.profiles.active']
+	systemProperty "spring.profiles.active", activeProfile
+	mainClass = "com.booster.hyphen.nice.AuthApplication"
+}

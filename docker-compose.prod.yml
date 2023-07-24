@@ -1,0 +1,123 @@
+version: "3"
+services:
+  admin:
+    platform: linux/amd64
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: admin_prod
+    image: image.registry.url.com/admin:2.0.0
+    logging:
+      driver: none
+    restart: always
+    env_file: .env
+    environment:
+      - ENV=production
+    ports:
+      - 5555:5555
+    volumes:
+      - "./admin:/usr/src/admin"
+      - "/usr/src/admin/node_modules"
+      - "/usr/src/admin/dist"
+  # nest:
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./nest
+  #     dockerfile: Dockerfile
+  #   container_name: nest_prod
+  #   image: image.registry.url.com/nest:2.0.0
+  #   logging:
+  #     driver: none
+  #   restart: always
+  #   env_file: .env
+  #   environment:
+  #     - ENV=production
+  #   ports:
+  #     - 8000:8000
+  #   volumes:
+  #     - "./nest:/usr/src/nest"
+  #     - "/usr/src/nest/node_modules"
+  #     - "/usr/src/nest/dist"
+  # nest2:
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./nest2
+  #     dockerfile: Dockerfile
+  #   container_name: nest2_prod
+  #   image: image.registry.url.com/nest2:2.0.0
+  #   logging:
+  #     driver: none
+  #   restart: always
+  #   env_file: .env
+  #   environment:
+  #     - ENV=production
+  #   ports:
+  #     - 8002:8002
+  #   volumes:
+  #     - "./nest2:/usr/src/nest2"
+  #     - "/usr/src/nest2/node_modules"
+  #     - "/usr/src/nest2/dist"
+  # hellofin:
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./hellofin
+  #     dockerfile: Dockerfile
+  #   container_name: hellofin_prod
+  #   image: image.registry.url.com/hellofin:2.0.0
+  #   logging:
+  #     driver: none
+  #   restart: always
+  #   env_file: .env
+  #   environment:
+  #     - ENV=production
+  #   ports:
+  #     - 8003:8003
+  #   volumes:
+  #     - "./hellofin:/usr/src/hellofin"
+  #     - "/usr/src/hellofin/node_modules"
+  #     - "/usr/src/hellofin/dist"
+  # auth:
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./auth
+  #     dockerfile: Dockerfile_prod
+  #   container_name: auth_prod
+  #   image: image.registry.url.com/auth:2.0.0
+  #   restart: always
+  #   env_file: .env
+  #   ports:
+  #     - 8080:8080
+  #   environment:
+  #     - ENV=production
+  # scheduler:
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./scheduler
+  #     dockerfile: Dockerfile
+  #   container_name: scheduler_prod
+  #   image: image.registry.url.com/scheduler:2.0.0
+  #   restart: always
+  #   env_file: .env
+  #   ports:
+  #     - 3333:3333
+  #   volumes:
+  #     - "./scheduler:/usr/src/scheduler"
+  #     - "/usr/src/scheduler/node_modules"
+  #     - "/usr/src/scheduler/dist"
+  # socket:
+  #   platform: linux/amd64
+  #   build:
+  #     context: ./socket
+  #     dockerfile: Dockerfile
+  #   container_name: socket_prod
+  #   image: image.registry.url.com/socket:2.0.0
+  #   restart: always
+  #   env_file: .env
+  #   environment:
+  #     - ENV=production
+  #   ports:
+  #     - 8001:8001
+  #   volumes:
+  #     - "./socket:/usr/src/socket"
+  #     - "/usr/src/socket/node_modules"
+  #     - "/usr/src/socket/dist"

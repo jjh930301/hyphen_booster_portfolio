@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hellofin
+spec:
+  type: NodePort
+  selector:
+    app: hellofin
+  ports:
+    - port: 80
+      targetPort: 8003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hellofin
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hellofin
+  template:
+    metadata:
+      labels:
+        app: hellofin
+    spec:
+      containers:
+        - name: hellofin
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - sleep 40
+          image: image.registry.url.com/hellofin:2.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8003
+          readinessProbe:
+            httpGet:
+              path: /health/check
+              port: 8003
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          envFrom:
+            - configMapRef:
+                name: conf
+      imagePullSecrets:
+        - name: regcred
+      terminationGracePeriodSeconds: 300
